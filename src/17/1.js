@@ -1,4 +1,5 @@
 import { loadInput } from '../utils/load-input.js';
+import { getMinHeap } from '../utils/get-min-heap.js';
 
 const possibleDirs = {
   '1,0': { x: 1, y: 0 },
@@ -7,25 +8,19 @@ const possibleDirs = {
   '0,-1': { x: 0, y: -1 },
 };
 
-const addToQueue = (queue, value) => {
-  queue.push(value);
-  queue.sort((a, b) => b.heat - a.heat);
-};
-
-const getNearest = (queue) => {
-  return queue.pop();
-};
-
 const getVisitedKey = (current, dir) =>
   `${current.x},${current.y},${dir.x},${dir.y}`;
 
 const run = (data) => {
   const finish = { x: data[0].length - 1, y: data.length - 1 };
-  const queue = [{ heat: 0, current: { x: 0, y: 0 }, dir: { x: 0, y: 0 } }];
+  const queue = getMinHeap();
+
+  queue.push({ heat: 0, current: { x: 0, y: 0 }, dir: { x: 0, y: 0 } }, 0);
+
   const visited = {};
 
-  while (queue.length) {
-    const { heat, current, dir } = getNearest(queue);
+  while (queue.size) {
+    const { heat, current, dir } = queue.pop();
 
     if (current.x === finish.x && current.y === finish.y) {
       return heat;
@@ -56,11 +51,14 @@ const run = (data) => {
         if (data[yy]?.[xx]) {
           heatCalc += data[yy][xx];
 
-          addToQueue(queue, {
-            heat: heatCalc,
-            current: { x: xx, y: yy },
-            dir: { x: dx, y: dy },
-          });
+          queue.push(
+            {
+              heat: heatCalc,
+              current: { x: xx, y: yy },
+              dir: { x: dx, y: dy },
+            },
+            heatCalc,
+          );
         }
       }
     });

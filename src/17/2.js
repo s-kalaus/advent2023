@@ -1,7 +1,6 @@
-import Heapify from 'heapify';
 import { loadInput } from '../utils/load-input.js';
+import { getMinHeap } from '../utils/get-min-heap.js';
 
-const QUEUE_SIZE = 1_000_000; // just guessing
 const possibleDirs = {
   '1,0': { x: 1, y: 0 },
   '0,1': { x: 0, y: 1 },
@@ -15,15 +14,14 @@ const getVisitedKey = (current, dir) =>
 const run = (data) => {
   const finish = { x: data[0].length - 1, y: data.length - 1 };
   const raw = [];
-  const queue = new Heapify.MinQueue(QUEUE_SIZE);
-  raw.push({ heat: 0, current: { x: 0, y: 0 }, dir: { x: 0, y: 0 } });
-  queue.push(raw.length - 1, 0);
+  const queue = getMinHeap();
+
+  queue.push({ heat: 0, current: { x: 0, y: 0 }, dir: { x: 0, y: 0 } }, 0);
+
   const visited = {};
 
   while (queue.size) {
-    const index = queue.pop();
-    const { heat, current, dir } = raw[index];
-    delete raw[index];
+    const { heat, current, dir } = queue.pop();
 
     if (current.x === finish.x && current.y === finish.y) {
       return heat;
@@ -55,13 +53,14 @@ const run = (data) => {
           heatCalc += data[yy][xx];
 
           if (i >= 4) {
-            raw.push({
-              heat: heatCalc,
-              current: { x: xx, y: yy },
-              dir: { x: dx, y: dy },
-            });
-
-            queue.push(raw.length - 1, heatCalc);
+            queue.push(
+              {
+                heat: heatCalc,
+                current: { x: xx, y: yy },
+                dir: { x: dx, y: dy },
+              },
+              heatCalc,
+            );
           }
         }
       }
