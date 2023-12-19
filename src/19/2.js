@@ -26,8 +26,6 @@ const bootstrap = (input) => {
     return { ...prev, [addr]: rules };
   }, {});
 
-  let out = 0;
-
   const ranges = {
     x: [...RANGE],
     m: [...RANGE],
