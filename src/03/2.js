@@ -64,7 +64,6 @@ const bootstrap = (input) => {
 
         if (nums.length === 2) {
           ratio += nums[0].num * nums[1].num;
-          console.log(nums, ratio);
         }
       }
     }
